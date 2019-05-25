@@ -2,5 +2,8 @@ require "xjz_loader/version"
 
 module XjzLoader
   class Error < StandardError; end
-  # Your code goes here...
+
+  ROOT = nil
+
+  require_relative '../ext/loader/loader'
 end

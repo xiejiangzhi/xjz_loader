@@ -1,3 +1,4 @@
+!.keep
 /.bundle/
 /.yardoc
 /_yardoc/
@@ -6,6 +7,13 @@
 /pkg/
 /spec/reports/
 /tmp/
+/ext/loader/*.so
+/ext/loader/*.o
+/ext/loader/*.bundle
+/ext/loader/Makefile
 
 # rspec failure tracking
 .rspec_status
+/spec/examples.txt
+
+*.swp
