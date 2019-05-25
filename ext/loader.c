@@ -73,7 +73,7 @@ void init_data(VALUE *code_str) {
 
 VALUE init_app(VALUE self) {
   VALUE App = rb_const_get(rb_cObject, rb_intern("XjzLoader"));
-  VALUE root_path = rb_const_get(App, rb_intern("ROOT"));
+  VALUE root_path = rb_funcall(App, rb_intern("root"), 0);
   VALUE data_path = rb_file_expand_path(rb_str_new_cstr("./data"), root_path);
 
   VALUE data_str = read_data_from_path(data_path);
@@ -139,7 +139,7 @@ VALUE start_app(VALUE self) {
 
 VALUE load_app_code(VALUE self, VALUE path) {
   VALUE App = rb_const_get(rb_cObject, rb_intern("XjzLoader"));
-  VALUE root_path = rb_const_get(App, rb_intern("ROOT"));
+  VALUE root_path = rb_funcall(App, rb_intern("root"), 0);
 
   if (rb_funcall(path, rb_intern("start_with?"), 1, rb_str_new_cstr("xjz/")) == Qtrue) {
     path = rb_str_concat(rb_str_new_cstr("src/"), path);

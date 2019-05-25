@@ -7,10 +7,10 @@
 /pkg/
 /spec/reports/
 /tmp/
-/ext/loader/*.so
-/ext/loader/*.o
-/ext/loader/*.bundle
-/ext/loader/Makefile
+/ext/*.so
+/ext/*.o
+/ext/*.bundle
+/ext/Makefile
 
 # rspec failure tracking
 .rspec_status

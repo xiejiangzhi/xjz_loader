@@ -23,7 +23,7 @@ RSpec.describe XjzLoader::Packer do
     expect(data).to be_a(String)
 
     File.write(data_path, data)
-    stub_const('XjzLoader::ROOT', root_path)
+    allow(XjzLoader).to receive(:root).and_return(root_path)
 
     expect {
       XjzLoader.start
@@ -51,7 +51,7 @@ RSpec.describe XjzLoader::Packer do
     expect(data).to be_a(String)
 
     File.write(data_path, data)
-    stub_const('XjzLoader::ROOT', root_path)
+    allow(XjzLoader).to receive(:root).and_return(root_path)
 
     XjzLoader.start
     expect(XjzLoader.get_res('asdf')).to eql(nil)
@@ -69,7 +69,7 @@ RSpec.describe XjzLoader::Packer do
     expect(data).to be_a(String)
 
     File.write(data_path, data)
-    stub_const('XjzLoader::ROOT', root_path)
+    allow(XjzLoader).to receive(:root).and_return(root_path)
 
     XjzLoader.start
     expect {
