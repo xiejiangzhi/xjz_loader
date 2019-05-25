@@ -33,6 +33,9 @@ RSpec.describe XjzLoader::Packer do
       expect(XjzLoader.load_file('code')).to eql(true)
     }.to change { result[:c] }.to(123)
 
+    # loaded code was removed, so cannot load again
+    expect(XjzLoader.load_file('code')).to eql(false)
+
     result[:c] = 111
     expect {
       expect {

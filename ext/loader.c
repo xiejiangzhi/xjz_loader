@@ -3,8 +3,8 @@
 
 const VALUE zero = INT2NUM(0);
 const VALUE dlen = INT2NUM(4);
-const char* codekey = "MYISEQS";
-const char* reskey = "MYRES";
+const char* codekey = "myiseqs";
+const char* reskey = "myres";
 
 // get a number(data length) from data string
 VALUE take_len(VALUE *str, VALUE len, VALUE fmt) {
@@ -67,8 +67,8 @@ void init_data(VALUE *code_str) {
       rb_hash_aset(res, k, v);
     }
   }
-  rb_const_set(rb_cObject, rb_intern(codekey), code);
-  rb_const_set(rb_cObject, rb_intern(reskey), res);
+  rb_ivar_set(rb_cObject, rb_intern(codekey), code);
+  rb_ivar_set(rb_cObject, rb_intern(reskey), res);
 }
 
 VALUE init_app(VALUE self) {
@@ -82,7 +82,7 @@ VALUE init_app(VALUE self) {
 }
 
 VALUE get_res(VALUE self, VALUE path) {
-  VALUE data = rb_const_get(rb_cObject, rb_intern(reskey));
+  VALUE data = rb_ivar_get(rb_cObject, rb_intern(reskey));
   VALUE val = rb_hash_aref(data, path);
 
   if (val == Qnil) {
@@ -93,7 +93,7 @@ VALUE get_res(VALUE self, VALUE path) {
 }
 
 VALUE load_code(VALUE self, VALUE path) {
-  VALUE data = rb_const_get(rb_cObject, rb_intern(codekey));
+  VALUE data = rb_ivar_get(rb_cObject, rb_intern(codekey));
   VALUE iseq = rb_hash_aref(data, path);
 
   if (iseq == Qnil) {
@@ -101,8 +101,8 @@ VALUE load_code(VALUE self, VALUE path) {
   }
   
   if (iseq != Qnil) {
+    rb_funcall(data, rb_intern("delete"), 1, path);
     rb_funcall(iseq, rb_intern("eval"), 0);
-    rb_hash_delete(data, path);
     
     return Qtrue;
   } else {
@@ -111,7 +111,8 @@ VALUE load_code(VALUE self, VALUE path) {
 }
 
 VALUE load_all_code(VALUE self) {
-  VALUE data = rb_funcall(rb_const_get(rb_cObject, rb_intern(codekey)), rb_intern("sort"), 0);
+  VALUE iseqs = rb_ivar_get(rb_cObject, rb_intern(codekey));
+  VALUE data = rb_funcall(iseqs, rb_intern("sort"), 0);
   VALUE iseq = Qnil;
   VALUE path = Qnil;
 
@@ -119,9 +120,9 @@ VALUE load_all_code(VALUE self) {
   for (int i = 0; i < len; i++) {
     path = RARRAY_AREF(RARRAY_AREF(data, i), 0);
     iseq = RARRAY_AREF(RARRAY_AREF(data, i), 1);
+    rb_funcall(data, rb_intern("delete"), 1, path);
     rb_funcall(iseq, rb_intern("eval"), 0);
   }
-  rb_hash_clear(data);
 
   return Qtrue;
 }
