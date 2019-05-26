@@ -3,8 +3,8 @@
 
 const VALUE zero = INT2NUM(0);
 const VALUE dlen = INT2NUM(4);
-const char* codekey = "myiseqs";
-const char* reskey = "myres";
+const char* codekey = "xjz_iseqs";
+const char* reskey = "xjz_res";
 
 // get a number(data length) from data string
 VALUE take_len(VALUE *str, VALUE len, VALUE fmt) {
@@ -128,6 +128,12 @@ VALUE load_code(VALUE self, VALUE path) {
   }
 }
 
+VALUE delete_code(VALUE self, VALUE path) {
+  VALUE data = rb_ivar_get(rb_cObject, rb_intern(codekey));
+  rb_funcall(data, rb_intern("delete"), 1, path);
+  return Qtrue;
+}
+
 VALUE load_all_code(VALUE self) {
   VALUE iseqs = rb_ivar_get(rb_cObject, rb_intern(codekey));
   VALUE data = rb_funcall(iseqs, rb_intern("sort"), 0);
@@ -185,6 +191,7 @@ void Init_loader() {
   if (ptr != NULL && *ptr) {
     rb_define_singleton_method(App, "init", init_app, 0);
     rb_define_singleton_method(App, "run", run_app, 0);
+    rb_define_singleton_method(App, "delete_code", delete_code, 1);
   }
 
   rb_define_singleton_method(App, "start", start_app, 0);

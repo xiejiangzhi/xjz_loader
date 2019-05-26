@@ -87,4 +87,16 @@ RSpec.describe XjzLoader do
     expect(XjzLoader.has_res?(/^dir\/(b|c)/)).to eql('dir/b')
     expect(XjzLoader.has_res?(/^dir\/dd/)).to eql(nil)
   end
+
+  it '.delete_code should delete code file' do
+    code_files.each { |p, s| packer.add_code(p, s) }
+
+    File.write(data_path, packer.result)
+    XjzLoader.start
+
+    expect(XjzLoader.delete_code('code.rb')).to eql(true)
+    expect {
+      expect(XjzLoader.load_file('code.rb')).to eql(false)
+    }.to_not change { result }
+  end
 end
