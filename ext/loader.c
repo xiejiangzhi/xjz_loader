@@ -117,7 +117,8 @@ VALUE load_all_code(VALUE self) {
   VALUE path = Qnil;
 
   int len = RARRAY_LENINT(data);
-  for (int i = 0; i < len; i++) {
+  int i;
+  for (i = 0; i < len; i++) {
     path = RARRAY_AREF(RARRAY_AREF(data, i), 0);
     iseq = RARRAY_AREF(RARRAY_AREF(data, i), 1);
     rb_funcall(data, rb_intern("delete"), 1, path);
