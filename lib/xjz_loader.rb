@@ -10,6 +10,10 @@ module XjzLoader
       return @root if @root && Dir.exist?(@root)
       raise "root is empty, please call XjzLoader.root= to set a root dir"
     end
+
+    def gem_dir
+      @gem_dir ||= File.expand_path('../../', __FILE__)
+    end
   end
 
   require_relative '../ext/loader'

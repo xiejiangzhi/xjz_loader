@@ -83,13 +83,31 @@ VALUE init_app(VALUE self) {
 
 VALUE get_res(VALUE self, VALUE path) {
   VALUE data = rb_ivar_get(rb_cObject, rb_intern(reskey));
-  VALUE val = rb_hash_aref(data, path);
+  return rb_hash_aref(data, path);
+}
 
-  if (val == Qnil) {
-    printf("[ERR] Not found path %s\n", RSTRING_PTR(path));
+VALUE has_res(VALUE self, VALUE path) {
+  VALUE data = rb_ivar_get(rb_cObject, rb_intern(reskey));
+
+  if (RB_TYPE_P(path, T_STRING)) {
+    if (rb_hash_aref(data, path) != Qnil) {
+      return path;
+    } else {
+      return Qnil;
+    }
+  } else if (RB_TYPE_P(path, T_REGEXP)) {
+    VALUE keys = rb_funcall(data, rb_intern("keys"), 0);
+    VALUE k;
+    int i, len = RARRAY_LENINT(keys);
+    for (i = 0; i < len; i++) {
+      k = RARRAY_AREF(keys, i);
+      if (rb_funcall(path, rb_intern("match?"), 1, k) == Qtrue) {
+        return k;
+      }
+    }
   }
 
-  return val;
+  return Qnil;
 }
 
 VALUE load_code(VALUE self, VALUE path) {
@@ -174,5 +192,6 @@ void Init_loader() {
   rb_define_singleton_method(App, "load_file", load_app_code, 1);
   rb_define_singleton_method(App, "load_all", load_all_code, 0);
   rb_define_singleton_method(App, "get_res", get_res, 1);
+  rb_define_singleton_method(App, "has_res?", has_res, 1);
 }
 
