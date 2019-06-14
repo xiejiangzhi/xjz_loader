@@ -1,10 +1,10 @@
 #include "ruby.h"
 #include "stdio.h"
 
-const VALUE zero = INT2NUM(0);
-const VALUE dlen = INT2NUM(4);
-const char* codekey = "xjz_iseqs";
-const char* reskey = "xjz_res";
+#define zero INT2NUM(0)
+#define dlen INT2NUM(4)
+static const char* codekey = "xjz_iseqs";
+static const char* reskey = "xjz_res";
 
 // get a number(data length) from data string
 VALUE take_len(VALUE *str, VALUE len, VALUE fmt) {
@@ -21,10 +21,12 @@ int is_code_path(VALUE path) {
 VALUE read_data_from_path(VALUE path) {
   VALUE Zlib_cls = rb_const_get(rb_cObject, rb_intern("Zlib"));
   VALUE Inflate_cls = rb_const_get(Zlib_cls, rb_intern("Inflate"));
-  VALUE data = rb_funcall(rb_cFile, rb_intern("read"), 1, path);
+  VALUE file = rb_funcall(rb_cFile, rb_intern("open"), 2, path, rb_str_new_cstr("rb"));
+  VALUE data = rb_funcall(file, rb_intern("read"), 0);
+  rb_funcall(file, rb_intern("close"), 0);
+  rb_funcall(data, rb_intern("force_encoding"), 1, rb_str_new_cstr("binary"));
   VALUE rand_len = take_len(&data, INT2NUM(1), rb_str_new_cstr("C"));
 
-  rb_funcall(data, rb_intern("force_encoding"), 1, rb_str_new_cstr("binary"));
   rb_funcall(data, rb_intern("slice!"), 2, zero, rand_len);
   rb_funcall(data, rb_intern("slice!"), 2, INT2NUM(-NUM2INT(rand_len)), rand_len);
 

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    xjz_loader (0.1.5)
+    xjz_loader (0.1.6)
 
 GEM
   remote: https://rubygems.org/
@@ -29,6 +29,7 @@ GEM
 
 PLATFORMS
   ruby
+  x64-mingw32
 
 DEPENDENCIES
   bundler (~> 2.0)

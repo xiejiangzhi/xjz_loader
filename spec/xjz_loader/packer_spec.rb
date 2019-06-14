@@ -22,7 +22,7 @@ RSpec.describe XjzLoader::Packer do
     data = subject.result
     expect(data).to be_a(String)
 
-    File.write(data_path, data)
+    File.open(data_path, 'wb') { |f| f.write(data) }
     allow(XjzLoader).to receive(:root).and_return(root_path)
 
     expect {

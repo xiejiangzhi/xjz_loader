@@ -18,6 +18,10 @@ RSpec.describe XjzLoader do
     allow(XjzLoader).to receive(:root).and_return(root_path)
   end
 
+  def write_data(path, data)
+    File.open(path, 'wb') { |f| f.write(data) }
+  end
+
   it "has a version number" do
     expect(XjzLoader::VERSION).not_to be nil
   end
@@ -26,7 +30,7 @@ RSpec.describe XjzLoader do
     packer.add_data('str', 'hello world')
     code_files.each { |p, s| packer.add_code(p, s) }
 
-    File.write(data_path, packer.result)
+    write_data(data_path, packer.result)
     XjzLoader.start
 
     expect(XjzLoader.get_res('asdf')).to eql(nil)
@@ -40,7 +44,7 @@ RSpec.describe XjzLoader do
     packer.add_code('src/xjz/b.rb', '$td[:bb] = "bbb"')
     packer.add_code('src/xjz/c.rb', '$td[:ccc] = "cc"')
 
-    File.write(data_path, packer.result)
+    write_data(data_path, packer.result)
     XjzLoader.start
 
     expect {
@@ -64,7 +68,7 @@ RSpec.describe XjzLoader do
     packer.add_code('a.rb', '($td[:a] ||= []) << 3; XjzLoader.load_file("b");')
     packer.add_code('b.rb', '($td[:a] ||= []) << 4; XjzLoader.load_file("a");')
 
-    File.write(data_path, packer.result)
+    write_data(data_path, packer.result)
 
     expect { XjzLoader.start }.to change { result[:a] }.to([1, 2])
     expect { XjzLoader.load_file('a') }.to change { result[:a] }.to([1, 2, 3, 4])
@@ -78,7 +82,7 @@ RSpec.describe XjzLoader do
     packer.add_data('dir/b', '2')
     packer.add_data('dir/c', '3')
 
-    File.write(data_path, packer.result)
+    write_data(data_path, packer.result)
     XjzLoader.start
 
     expect(XjzLoader.has_res?('dir/a')).to eql('dir/a')
@@ -91,7 +95,7 @@ RSpec.describe XjzLoader do
   it '.delete_code should delete code file' do
     code_files.each { |p, s| packer.add_code(p, s) }
 
-    File.write(data_path, packer.result)
+    write_data(data_path, packer.result)
     XjzLoader.start
 
     expect(XjzLoader.delete_code('code.rb')).to eql(true)
